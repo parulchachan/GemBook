@@ -1,78 +1,74 @@
 package com.gemini.gembook.model;
 
-import java.util.HashSet;
-import java.util.Set;
+//import java.util.HashSet;
+//import java.util.Set;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
-@Table(name="User")
+@Table(name="users")
 public class User {
-	
-	@Column(name = "first_name")
-	private String firstName;
-	
-	@Column(name = "last_name")
-	private String lastName;
-	
 	@Id
+	@Column(name = "user_id")
+	private String userId;
+	
 	@Column(name = "user_name")
 	private String userName;
 	
-	@Column(name = "password")
-	private char[] password;
+	@Column(name = "email_id")
+	private String emailId;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy="user", cascade = CascadeType.ALL, targetEntity=Post.class)
-	Set<Post> posts = new HashSet<>();
+//	@JsonIgnore
+//	@OneToMany(
+//			mappedBy="users", 
+//			cascade = CascadeType.ALL, 
+//			targetEntity=Post.class)
+//	Set<Post> posts = new HashSet<>();
 	
-	public User(String firstName, String lastName, String userName,char[] password) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public User(String userId, String userName, String emailId) {
+		this.userId = userId;
 		this.userName = userName;
-		this.password = password;
+		this.emailId=emailId;
 	}
 	
 	public User() {}
 	
-	public String getFirstName() {
-		return firstName;
+	public User(String userId){
+		this.userId = userId;
 	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+	
 	public String getUserName() {
 		return userName;
 	}
-	public void setUserName(String userName) {
+	
+	public void setUSerName(String userName) {
 		this.userName = userName;
 	}
 	
-	@JsonIgnore
-	public char[] getPassword() {
-		return password;
+	public String getUserId() {
+	return userId;
 	}
 	
-	public void setPassword(char[] password) {
-		this.password = password;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
-	@JsonIgnore
-	public Set<Post> getPosts() {
-		return posts;
+	public String getEmailId() {
+		return emailId;
 	}
-
-	public void setPosts(Set<Post> posts) {
-		this.posts = posts;
-	}
-
 	
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+//
+//	@JsonIgnore
+//	public Set<Post> getPosts() {
+//		return posts;
+//	}
+//
+//	public void setPosts(Set<Post> posts) {
+//		this.posts = posts;
+//	}
 }

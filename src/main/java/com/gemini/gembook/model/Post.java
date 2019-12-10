@@ -1,6 +1,6 @@
 package com.gemini.gembook.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,48 +11,44 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table( name="post" )
+@Table( name="posts" )
 public class Post {
+	
 	@Id
-	@JsonIgnore
-	@Column(name="Id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Integer postId = 1;
+	@Column(name="post_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int postId;
 	
 	@ManyToOne
 	@JoinColumn(name="post_type_id")
-	PostType postType;
+	private PostType postType;
 	
 	@ManyToOne
-	@JoinColumn(name="user_name")
-	User user;
+	@JoinColumn(name="user_id")
+	private User user;
 	
 	@Column(name="post_content")
-	String postContent;
+	private String postContent;
 	
 	@Column(name="post_time")
-	Date postTime;
+	private Date postTime;
 	
-	public Post() {
+	public Post() {}
+	
+	public Post(int postId) {
+		this.postId = postId;
 	}
 	
-	public Post(PostType postType, User user, String postContent) {
-		this.postType = postType;
-		this.user = user;
+	public Post(int postType, String userId, String postContent) {
+		this.postType = new PostType(postType) ;
+		this.user =new User(userId);
 		this.postContent = postContent;
-		postTime = new Date(System.currentTimeMillis());
+		this.postTime = new Date();
 	}
 	
-	@JsonIgnore
 	public Integer getPostId() {
 		return postId;
-	}
-
-	public void setPostId(int postId) {
-		this.postId = postId;
 	}
 
 	public PostType getPostType() {
@@ -86,6 +82,4 @@ public class Post {
 	public void setPostTime(Date postTime) {
 		this.postTime = postTime;
 	}
-	
-	
 }

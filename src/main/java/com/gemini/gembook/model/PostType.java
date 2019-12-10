@@ -23,9 +23,9 @@ public class PostType {
 	@Column(name="post_type_name")
 	private String postType;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy="postType", cascade = CascadeType.ALL, targetEntity=Post.class)
-	Set<Post> posts = new HashSet<>();
+//	@JsonIgnore
+//	@OneToMany(mappedBy="postType", cascade = CascadeType.ALL, targetEntity=Post.class)
+//	Set<Post> posts = new HashSet<>();
 
 	public PostType(int postTypeId, String postType) {
 		this.postTypeId = postTypeId;
@@ -33,6 +33,11 @@ public class PostType {
 	}
 	
 	public PostType() {
+	}
+	
+	public PostType(int postTypeId) {
+		this.postTypeId = postTypeId;
+		
 	}
 	
 	public int getPostTypeId() {
@@ -51,13 +56,13 @@ public class PostType {
 		this.postType = postType;
 	}
 	
-	@JsonIgnore
-	public Set<Post> getPosts() {
-		return posts;
-	}
-
-	public void setPosts(Set<Post> posts) {
-		this.posts = posts;
-	}
+//	@JsonIgnore
+//	public Set<Post> getPosts() {
+//		return posts;
+//	}
+//
+//	public void setPosts(Set<Post> posts) {
+//		this.posts = posts;
+//	}
 	
 }

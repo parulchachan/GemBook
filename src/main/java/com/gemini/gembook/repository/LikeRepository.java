@@ -7,32 +7,39 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.gemini.gembook.model.Like;
+import com.gemini.gembook.model.LikeIdentity;
 import com.gemini.gembook.model.Post;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post,Integer>{
-
+public interface LikeRepository extends JpaRepository<Like, LikeIdentity>{
+	
+	
 	@Query(
-            value = "select * from posts\n"+
-            		"order by post_time desc limit ?1 , 2;",
+            value = "select * from likes\n"+
+            		"where post_id = ?1",
             nativeQuery = true
     )
-	List<Post> getnextfifteenPost(int postCount);
+	List<Like> findByLikeIdentityPost(Post post);
 	
+	
+	
+	@Query(
+            value = "select * from likes\n"+
+            		"where post_id =?1 and user_id =?2",
+            nativeQuery = true
+    )
+	Like findById(int postId, String userId);
+
 	@Modifying
 	@Transactional
 	@Query(
-			value = "Delete from posts\n" +
+			value = "Delete from likes\n" +
 					"where post_id = ?1\n" +
 					"and user_id = ?2",
            nativeQuery = true
-	)	
-	void deletePost(int postId, String userId);
-	
-	@Query(
-            value = "Select * from posts where post_id = ?1",
-            nativeQuery = true
-    )
-    Post findByPostId(int postId);
+	)
+	void deleteLike(int postId, String userId);
 
 }
