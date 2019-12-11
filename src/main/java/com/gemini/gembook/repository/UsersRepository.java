@@ -18,12 +18,24 @@ public interface UsersRepository extends JpaRepository<User, String>{
 @Modifying
 @Transactional
 @Query(
-        value = "insert into user(first_name,last_name,user_name,passowrd) values (:firstName,:lastName,:userName,:password);"
+        value = "insert into user(first_name,last_name,user_name) values (:firstName,:lastName,:userName);"
         ,nativeQuery = true
 )
-void insertUser(@Param("firstName")String firstName, @Param("lastName")String lastName, @Param("userName")String userName, @Param("password")char[] password);
+void insertUser(@Param("firstName")String firstName, @Param("lastName")String lastName, @Param("userName")String userName);
 
-//@Query("select * from user where userName= :userName;")
-//User findByUserName(@Param("userName")String userName);
+/*
+ * Retrieve user from the userNameuser table.
+ */
+@Query(
+		value= "select * from user where user_name = ?1", nativeQuery = true)
+User findByUserName(String userName);
 
+/*
+ * delete the specific user from user table.
+ */
+@Modifying
+@Transactional
+@Query(
+		value = "delete from user where user_name = ?1", nativeQuery = true)
+void deleteByUserName(String userName);
 }
