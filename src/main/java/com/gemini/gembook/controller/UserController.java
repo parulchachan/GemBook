@@ -28,13 +28,18 @@ public class UserController {
     /*
     Returns a list of all users
     */
-    @GetMapping(value = "/allusers")
+    @GetMapping(value="/allusers")
     public BaseResponse getAllUsers(){
         List<User> users = (List<User>) usersService.getUsers();
 
         if(users == null) {
-        	logger.info("users not found.");
-            return new BaseResponse("users not found.", HttpStatus.INTERNAL_SERVER_ERROR,null);            
+        	logger.info("users could not be fetched");
+            return new BaseResponse("users could not be fetched", HttpStatus.INTERNAL_SERVER_ERROR,null);            
+        }
+        
+        if(users.isEmpty()) {
+        	logger.info("users not found");
+            return new BaseResponse("users not found", HttpStatus.NOT_FOUND,null);
         }
 
         logger.info("Users retrieved");
@@ -43,51 +48,51 @@ public class UserController {
 	
 	
     @PostMapping
-    public BaseResponse addUser(@RequestParam(value = "first_name") String firstName,
-    		@RequestParam(value = "last_name") String lastName, @RequestParam(value = "user_name") String userName){
+    public BaseResponse addUser(@RequestParam(value = "firstName") String firstName,
+    		@RequestParam(value = "lastName") String lastName, @RequestParam(value = "userId") String userId){
 
-        User user = usersService.addUser(new User(firstName, lastName, userName));
+        User user = usersService.addUser(new User(firstName, lastName, userId));
         if(user == null) {
-            logger.error("User : {} not added",userName);
+            logger.error("User : {} not added",userId);
             return new BaseResponse("Failure", HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
-        logger.info("User created : {}", userName);
+        logger.info("User created : {}", userId);
         return new BaseResponse("Success",HttpStatus.CREATED,user);
     }
     
     
-    @GetMapping(value = "/userdetails")
-    public BaseResponse getUserByUserName(@RequestParam(value = "user_name") String userName){
-        User user = usersService.findByUserName(userName);
+    @GetMapping(value = "/userdetail")
+    public BaseResponse getUserByUserName(@RequestParam(value = "userId") String userId){
+        User user = usersService.findByUserName(userId);
 
         if(user == null) {
         	logger.info("user not found.");
             return new BaseResponse("User not found", HttpStatus.NOT_FOUND,null);            
         }
 
-        logger.info("User {}, retrieved",userName);
+        logger.info("User {}, retrieved",userId);
         return new BaseResponse("Success",HttpStatus.OK, user);
     }
     
     
     @DeleteMapping
-    public BaseResponse deleteUser(@RequestParam(value = "user_name") String userName) {
+    public BaseResponse deleteUser(@RequestParam(value = "userId") String userId) {
     	
-    	User user = usersService.findByUserName(userName);
+    	User user = usersService.findByUserName(userId);
     	if(null == user) {
-    		logger.warn("user does not exist.");
+    		logger.warn("user does not exist");
     		return new BaseResponse("user does not exist",HttpStatus.NOT_FOUND,null);
     	}
     	
-    	if(usersService.deleteUser(userName)) {
+    	if(usersService.deleteUser(userId)) {
     		logger.info("user deleted successfully.");
     		return new BaseResponse("User deleted successfully",HttpStatus.OK,true);
     	}
     	else {
-    		logger.error("user: {} could not be deleted",userName);
+    		logger.error("user: {} could not be deleted",userId);
     		return new BaseResponse("User could not be deleted",HttpStatus.INTERNAL_SERVER_ERROR,
     				false);
     	}
     }
-    
+
 }

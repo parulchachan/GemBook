@@ -18,47 +18,56 @@ import com.gemini.gembook.model.Comment;
 import com.gemini.gembook.service.CommentService;
 
 @RestController
-@RequestMapping(value="/dashboard/comment")
+@RequestMapping(value="/dashboard/post/comment")
 public class CommentController {
 
 	@Autowired
-	CommentService commentService;
+	private CommentService commentService;
 	
-	Logger logger = LoggerFactory.getLogger(CommentController.class);
+	private final Logger logger = LoggerFactory.getLogger(CommentController.class);
 	
 	@GetMapping(value="/allcomments")
-	public BaseResponse getAllComments(@RequestParam("post_id") int postId) {
+	public BaseResponse getAllComments(@RequestParam("postId") int postId) {
 		List<Comment> comments = commentService.getAllComments(postId);
 		if(null == comments) {
 			logger.error("comments not found");
 			return new BaseResponse("comments not found",HttpStatus.INTERNAL_SERVER_ERROR,null);
 		}
 		return new BaseResponse("comments found",HttpStatus.OK,comments);
-	}
+	}	 
 	
 	@PostMapping
-	public BaseResponse addComment(@RequestParam("post_id") int postId, @RequestParam("user_name") String userName,
-			@RequestParam("comment_content") String commentContent) {
-		Comment comment = commentService.insertComment(postId, userName, commentContent);
+	public BaseResponse addComment(@RequestParam(value = "postId") int postId,
+			@RequestParam(value = "userId") String userId, @RequestParam(value = "commentContent") String commentContent){
+		Comment comment = commentService.addComment(postId, userId,commentContent);
 		if(null == comment) {
-			logger.error("comment not added successfully");
-			return new BaseResponse("comment not added successfully",HttpStatus.INTERNAL_SERVER_ERROR,null);
+			logger.warn("comment : {} not added",commentContent);
+			return new BaseResponse("Failure", HttpStatus.INTERNAL_SERVER_ERROR, null);
 		}
-		return new BaseResponse("comment added successfully",HttpStatus.OK,comment);
+		logger.info("comment created : {}",comment);
+		return new BaseResponse("Success",HttpStatus.CREATED,comment);
 	}
 	
 	@DeleteMapping
-	public BaseResponse deleteComment(@RequestParam("comment_id") int commentId) {
-		if(commentService.deleteComment(commentId)) {
-			return new BaseResponse("comments deleted successfully",HttpStatus.OK,true);
-		}
-		else {
-			return new BaseResponse("comment could not be deleted", HttpStatus.INTERNAL_SERVER_ERROR, false);
-		}
-	}
+    public BaseResponse deleteComment(@RequestParam(value = "commentId")int commentId){
+        
+//    	if(commentService.findByCommentId(commentId) == null){
+//            logger.warn("Comment does not exists : {}",commentId);
+//            return new BaseResponse("Comment does not exists",HttpStatus.NOT_ACCEPTABLE,false);
+//        }
+
+        if(commentService.deleteComment(commentId)) {
+            logger.info("Comment deleted : {}",commentId);
+            return new BaseResponse("Success", HttpStatus.OK, true);
+        }
+
+        logger.warn("Comment not deleted {}",commentId);
+        return new BaseResponse("Failure",HttpStatus.INTERNAL_SERVER_ERROR,false);
+    
+    }
 	
 	@PutMapping
-	public BaseResponse editComment(@RequestParam("comment_id")int commentId, @RequestParam("comment_content") String commentContent) {
+	public BaseResponse editComment(@RequestParam("commentId")int commentId, @RequestParam("commentContent") String commentContent) {
 		if(commentService.updateComment(commentId, commentContent)) {
 			return new BaseResponse("comment updated successfully",HttpStatus.OK,true);
 		}
@@ -68,7 +77,7 @@ public class CommentController {
 	}
 	
 	@GetMapping(value="/topfivecomments")
-	public BaseResponse getLatestComments(@RequestParam("post_id")int postId) {
+	public BaseResponse getLatestComments(@RequestParam("postId")int postId) {
 		List<Comment> comments = commentService.getLatestComments(postId);
 		if(null == comments) {
 			logger.error("comments not found.");

@@ -18,17 +18,17 @@ public interface UsersRepository extends JpaRepository<User, String>{
 @Modifying
 @Transactional
 @Query(
-        value = "insert into user(first_name,last_name,user_name) values (:firstName,:lastName,:userName);"
+        value = "insert into user(first_name,last_name,user_id) values (:firstName,:lastName,:userId);"
         ,nativeQuery = true
 )
-void insertUser(@Param("firstName")String firstName, @Param("lastName")String lastName, @Param("userName")String userName);
+void insertUser(@Param("firstName")String firstName, @Param("lastName")String lastName, @Param("userId")String userId);
 
 /*
  * Retrieve user from the userNameuser table.
  */
 @Query(
-		value= "select * from user where user_name = ?1", nativeQuery = true)
-User findByUserName(String userName);
+		value= "select * from user where user_id = ?1", nativeQuery = true)
+User findByUserName(String userId);
 
 /*
  * delete the specific user from user table.
@@ -36,6 +36,6 @@ User findByUserName(String userName);
 @Modifying
 @Transactional
 @Query(
-		value = "delete from user where user_name = ?1", nativeQuery = true)
-void deleteByUserName(String userName);
+		value = "delete from user where user_Id = ?1", nativeQuery = true)
+void deleteByUserName(String userId);
 }

@@ -13,9 +13,9 @@ import com.gemini.gembook.repository.UsersRepository;
 @Service
 public class UsersService {
 	private UsersRepository usersRepository;
-	
-	private Logger logger = LoggerFactory.getLogger(UsersService.class);
-	
+
+	private final Logger logger  = LoggerFactory.getLogger(UsersService.class);
+
 	@Autowired
 	public UsersService(UsersRepository usersRepository) {
 		this.usersRepository = usersRepository;
@@ -23,7 +23,7 @@ public class UsersService {
 	
 	public User addUser(User user) {
 		try {
-			usersRepository.insertUser(user.getFirstName(), user.getLastName(), user.getUserName()); //usersRepository.save(user);
+			usersRepository.insertUser(user.getFirstName(), user.getLastName(), user.getUserId());
 		}
 		catch(Exception e) {
 			logger.error("usersRepository.addUser method throws an exception, {} ",e.getMessage());
@@ -32,15 +32,14 @@ public class UsersService {
 		return user;
 	}
 	
-	public Iterable<User> getUsers() {
-		List<User> list = null;
-		try {
-			list = usersRepository.findAll();
-		}
-		catch(Exception e) {
-			logger.error("usersRepository.findAll() throws an exception, {} ",e.getMessage());
-		}
-		return list;
+	public List<User> getUsers() {
+		List<User> users = null;
+        try {
+            users = usersRepository.findAll();
+        }catch (Exception e){
+            logger.error("usersRepository.findAll() throws an exception: {}",e.getMessage());
+        }
+        return users;
 	}
 	
 	public User findByUserName(String userName) {

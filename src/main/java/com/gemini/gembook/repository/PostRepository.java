@@ -14,26 +14,24 @@ import com.gemini.gembook.model.Post;
 public interface PostRepository extends JpaRepository<Post, Integer>{
 	
 	@Query(
-			value="select * from post where user_name = ?1", nativeQuery = true
+			value="select * from post where user_id = ?1", nativeQuery = true
 			)
-	public List<Post> getPostByUserName(String userName);
+	public List<Post> getPostByUserName(String userId);
+	
 	
 	@Query(
 			value="select * from post where post_type_id = ?1", nativeQuery = true
 			)
 	public List<Post> getPostByType(int postTypeId);
-	
-	@Modifying
-	@Transactional
-	@Query(
-			value="delete from post where post_id = ?1", nativeQuery = true
-			)
-	public void deletePostById(int postId);
+
 	
 	@Query(
-			value="select * from post where post_id = ?1", nativeQuery = true
-			)
-	public Post getPostById(int postId);
+            value = "select * from post\n"+
+            		"order by post_time desc limit ?1 , 2;",
+            nativeQuery = true
+    )
+	List<Post> getnextfifteenPost(int postCount);
+	
 	
 	@Modifying
 	@Transactional
@@ -41,4 +39,23 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 			value="update post set post_content = ?2 where post_id = ?1",
 			nativeQuery = true )
 	public  int updatePost(int postId, String postContent);
+
+
+	@Modifying
+	@Transactional
+	@Query(	
+			value = "Delete from post\n" +
+					"where post_id = ?1\n" +
+					"and user_id = ?2",
+           nativeQuery = true
+	)	
+	void deletePost(int postId, String userId);
+	
+	
+	@Query(
+            value = "Select * from post where post_id = ?1",
+            nativeQuery = true
+    )
+    Post findByPostId(int postId);
+
 }

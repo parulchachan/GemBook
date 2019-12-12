@@ -4,48 +4,50 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name="Comment")
+@Table( name="comments")
 public class Comment {
+	
 	@Id
 	@Column(name="comment_id")
 	private int commentId;
 	
 	@ManyToOne
 	@JoinColumn(name="post_id")
-	Post post;
+	private Post post;
 	
 	@ManyToOne
-	@JoinColumn(name="user_Name")
-	User commenter;
+	@JoinColumn(name="user_id")
+	User user;
 	
 	@Column(name="comment_content")
 	private String commentContent;
 	
 	@Column(name="comment_time")
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date commentTime;
 	
-	public Comment() {
+	public Comment() {}
+	
+	public Comment(int commentId) {
+		this.commentId = commentId;
 	}
 	
-	public Comment(Post post, User user, String commentContent) {
-		this.post = post;
-		this.commenter = user;
+	public Comment(int postId, String userId, String commentContent) {
+		this.post = new Post(postId) ;
+		this.user = new User(userId);
 		this.commentContent = commentContent;
-		this.commentTime = new Date(System.currentTimeMillis());
+		this.commentTime = new Date();
 	}
-	
+
 	public int getCommentId() {
 		return commentId;
 	}
@@ -62,12 +64,12 @@ public class Comment {
 		this.post = post;
 	}
 
-	public User getCommenter() {
-		return commenter;
+	public User getUser() {
+		return user;
 	}
 
-	public void setCommenter(User commenter) {
-		this.commenter = commenter;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getCommentContent() {
@@ -78,12 +80,12 @@ public class Comment {
 		this.commentContent = commentContent;
 	}
 
-	public Date getDateTime() {
+	public Date getCommentTime() {
 		return commentTime;
 	}
 
-	public void setDateTime(Date commentTime) {
+	public void setCommentTime(Date commentTime) {
 		this.commentTime = commentTime;
 	}
-	
+
 }

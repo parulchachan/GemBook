@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.gemini.gembook.model.Comment;
 import com.gemini.gembook.model.Post;
 import com.gemini.gembook.model.User;
@@ -25,7 +26,7 @@ public class CommentService {
 	@Autowired
 	private UsersService usersService;
 	
-	private Logger logger = LoggerFactory.getLogger(CommentService.class);
+	private final Logger logger = LoggerFactory.getLogger(CommentService.class);
 	private static final int ZERO = 0;
 	private static final int ONE = 1;
 	
@@ -43,41 +44,26 @@ public class CommentService {
 		return comments;
 	}
 	
-	public Comment insertComment(int postId, String userName, String commentContent) {
-		Post post = postService.getPostById(postId);
-		if(null == post) {
-			logger.error("post not found with post id; {}",postId);
-			return null;
-		}
-		User user = usersService.findByUserName(userName);
-		if(null == user) {
-			logger.error("user not found with user id: {}",userName);
-			return null;
-		}
-		return commentRepository.save(new Comment(post, user, commentContent));
+	public Comment addComment(int postId, String userId, String commentContent) { 
+		Comment comment = null;
+		try {
+			comment = commentRepository.save(new Comment(postId, userId,commentContent));
+        }
+        catch (Exception e){
+            logger.error("Exception in addComment() : {}",e.getMessage());
+        }
+		return comment;
 	}
 	
 	public boolean deleteComment(int commentId) {
-		int status = ZERO;
-		try {
-			status = commentRepository.deleteComment(commentId);
-		}
-		catch(Exception e) {
-			logger.error("commentRepository.deleteComment throws an exception, {}", e.getMessage());
-		}
-		return (ONE == status) ? true : false;		
-	}
-	
-	public Comment getCommentById(int commentId) {
-		Comment comment = null;
-		try {
-			comment = commentRepository.getCommentById(commentId);
-		}
-		catch(Exception e) {
-			logger.error("commentRepository.getCommentById throws an exception, {}", e.getMessage());
-		}
-		return comment;
-	}
+        try{
+        	commentRepository.deleteComment(commentId);
+        }
+        catch (Exception e){
+            logger.error("Exception in deleteComment() : {}",e.getMessage());
+        }
+        return commentRepository.findByCommentId(commentId) == null;
+    }
 	
 	public boolean updateComment(int commentId, String commentContent) {
 		int status = ZERO;
@@ -100,5 +86,27 @@ public class CommentService {
 		}
 		return comments;
 	}
+	
+//	public  List<Comment> getCommentsByPostId(int postId){
+//		List<Comment> comments = null;
+//        try {
+//        	comments = commentRepository.findByPostId(postId);
+//        }catch (Exception e){
+//            logger.error("Exception in getCommentsByPostId() : {}",e.getMessage());
+//        }
+//        return comments;
+//	}
+//	
+	
+//	public Comment findByCommentId(int commentId) {
+//		Comment comment = new Comment();
+//        try{
+//        	comment = commentRepository.findByCommentId(commentId);
+//        }
+//        catch(Exception e){
+//            logger.error("Exception in findByCommentId() : {}",e.getMessage());
+//        }
+//        return  comment;
+//	}
 	
 }

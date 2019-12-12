@@ -1,27 +1,18 @@
 package com.gemini.gembook.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table( name="post" )
 public class Post {
+	
 	@Id
 	@Column(name="post_id")
 	private int postId;
@@ -31,37 +22,32 @@ public class Post {
 	private PostType postType;
 	
 	@ManyToOne
-	@JoinColumn(name="user_name")
+	@JoinColumn(name="user_id")
 	private User user;
 	
 	@Column(name="post_content")
-	String postContent;
+	private String postContent;
 	
 	@Column(name="post_time")
-	@Temporal(TemporalType.TIMESTAMP)
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	Date postTime;
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date postTime;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy="post", cascade = CascadeType.ALL, targetEntity=Comment.class)
-	Set<Comment> comments = new HashSet<>();
-
-	public Post() {
+	public Post() {}
+	
+	public Post(int postId) {
+		this.postId = postId;
 	}
 	
-	public Post(PostType postType, User user, String postContent) {
-		this.postType = postType;
-		this.user = user;
+	public Post(int postType, String userId, String postContent) {
+		this.postType = new PostType(postType) ;
+		this.user = new User(userId);
 		this.postContent = postContent;
-		postTime = new Date(System.currentTimeMillis());
+		this.postTime = new Date();
 	}
 	
 	public Integer getPostId() {
 		return postId;
-	}
-
-	public void setPostId(int postId) {
-		this.postId = postId;
 	}
 
 	public PostType getPostType() {
@@ -95,13 +81,5 @@ public class Post {
 	public void setPostTime(Date postTime) {
 		this.postTime = postTime;
 	}
-	
-	public Set<Comment> getComments() {
-		return comments;
-	}
 
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
-	}
-	
 }
