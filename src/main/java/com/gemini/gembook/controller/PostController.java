@@ -29,7 +29,7 @@ public class PostController {
     public BaseResponse getAllPosts(){
         List<Post> posts = (List<Post>) postService.getPosts();
 
-        if(posts == null) {
+        if(posts.isEmpty()) {
         	logger.info("post not found.");
             return new BaseResponse("Internal Error", HttpStatus.NOT_FOUND,null);        
         }

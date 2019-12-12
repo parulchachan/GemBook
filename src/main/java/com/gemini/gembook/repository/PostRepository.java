@@ -34,5 +34,10 @@ public interface PostRepository extends JpaRepository<Post,Integer>{
             nativeQuery = true
     )
     Post findByPostId(int postId);
-
+	
+	@Query(
+            value = "Select * from posts where post_id = ?1",
+            nativeQuery = true
+    )
+    Post findCompletePost(int postId);
 }
