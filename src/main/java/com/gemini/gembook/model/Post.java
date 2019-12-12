@@ -4,20 +4,17 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table( name="posts" )
+@Table( name="post" )
 public class Post {
 	
 	@Id
 	@Column(name="post_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int postId;
 	
 	@ManyToOne
@@ -32,6 +29,8 @@ public class Post {
 	private String postContent;
 	
 	@Column(name="post_time")
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date postTime;
 	
 	public Post() {}
@@ -42,7 +41,7 @@ public class Post {
 	
 	public Post(int postType, String userId, String postContent) {
 		this.postType = new PostType(postType) ;
-		this.user =new User(userId);
+		this.user = new User(userId);
 		this.postContent = postContent;
 		this.postTime = new Date();
 	}
@@ -59,11 +58,11 @@ public class Post {
 		this.postType = postType;
 	}
 
-	public User getUserId() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUserId(User userName) {
+	public void setUser(User userName) {
 		this.user = userName;
 	}
 
@@ -74,7 +73,7 @@ public class Post {
 	public void setPostContent(String postContent) {
 		this.postContent = postContent;
 	}
-
+	
 	public Date getPostTime() {
 		return postTime;
 	}
@@ -82,4 +81,5 @@ public class Post {
 	public void setPostTime(Date postTime) {
 		this.postTime = postTime;
 	}
+
 }

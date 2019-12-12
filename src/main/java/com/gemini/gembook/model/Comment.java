@@ -1,14 +1,15 @@
 package com.gemini.gembook.model;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 
 @Entity
 @Table( name="comments")
@@ -16,21 +17,22 @@ public class Comment {
 	
 	@Id
 	@Column(name="comment_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int commentId;
 	
 	@ManyToOne
 	@JoinColumn(name="post_id")
-	private Post postId;
+	private Post post;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private User user;
+	User user;
 	
 	@Column(name="comment_content")
 	private String commentContent;
 	
 	@Column(name="comment_time")
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date commentTime;
 	
 	public Comment() {}
@@ -40,8 +42,8 @@ public class Comment {
 	}
 	
 	public Comment(int postId, String userId, String commentContent) {
-		this.postId = new Post(postId) ;
-		this.user =new User(userId);
+		this.post = new Post(postId) ;
+		this.user = new User(userId);
 		this.commentContent = commentContent;
 		this.commentTime = new Date();
 	}
@@ -54,12 +56,12 @@ public class Comment {
 		this.commentId = commentId;
 	}
 
-	public Post getPostId() {
-		return postId;
+	public Post getPost() {
+		return post;
 	}
 
-	public void setPostId(Post postId) {
-		this.postId = postId;
+	public void setPost(Post post) {
+		this.post = post;
 	}
 
 	public User getUser() {
@@ -85,4 +87,5 @@ public class Comment {
 	public void setCommentTime(Date commentTime) {
 		this.commentTime = commentTime;
 	}
+
 }
