@@ -2,6 +2,7 @@ package com.gemini.gembook.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,11 +27,25 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 
 	
 	@Query(
-            value = "select * from post\n"+
-            		"order by post_time desc limit ?1 , 2;",
+            value = "select * from post \n"+
+            		"order by post_time desc limit 3;",
             nativeQuery = true
     )
-	List<Post> getnextfifteenPost(int postCount);
+	List<Post> getRecentPosts();
+	
+	@Query(
+            value = "select * from post where post_id < ?3 and post_id not in (?1,?2,?3) \n"
+            		+ "order by post_time desc limit 3;",
+            nativeQuery = true
+    )
+	List<Post> getNextPosts(int fstRcntPostId, int scndRcntPostId, int thrdRcntPostId);
+	
+	@Query(
+            value = "select * from post\n"+
+            		"order by post_time desc",
+            nativeQuery = true
+    )
+	List<Post> getNextPostPage(Pageable pageable);
 	
 	
 	@Modifying
@@ -49,7 +64,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 					"and user_id = ?2",
            nativeQuery = true
 	)	
-	void deletePost(int postId, String userId);
+	int deletePost(int postId, String userId);
 	
 	
 	@Query(

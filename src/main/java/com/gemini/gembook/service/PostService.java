@@ -5,10 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import com.gemini.gembook.model.Post;
-import com.gemini.gembook.model.PostType;
-import com.gemini.gembook.model.User;
 import com.gemini.gembook.repository.PostRepository;
 
 @Service
@@ -78,29 +77,37 @@ public class PostService {
 		}
 		return (ONE == status) ? true : false;
 	}
-	
-//	public List<Post> getPosts() {
-//		List<Post> posts = null;
-//        try {
-//        	posts = postRepository.findAll();
-//        }catch (Exception e){
-//            logger.error("Exception in findAll() : {}",e.getMessage());
-//        }
-//        return posts;
-//	}
-	
-	public List<Post> getnextfifteenPost(int postCount) {
+
+
+	public List<Post> getNextPosts(int fstRcntPostId, int scndRcntPostId, int thrdRcntPostId) {
 		List<Post> posts = null;
 		
 		try {
-			posts = postRepository.getnextfifteenPost(postCount);
+			if(ZERO == fstRcntPostId) {
+				posts = postRepository.getRecentPosts();
+			}
+			else {
+				posts = postRepository.getNextPosts(fstRcntPostId, scndRcntPostId, thrdRcntPostId);
+			}
         }
         catch (Exception e){
             logger.error("Exception in getnextfifteenPost() : {}",e.getMessage());
         }
 		return posts;
 	}
-
+	
+	public List<Post> getNextPostPage(PageRequest pageRequest) {
+		List<Post> posts = null;
+		
+		try {
+			posts = postRepository.getNextPostPage(pageRequest);
+        }
+        catch (Exception e){
+            logger.error("Exception in getnextfifteenPost() : {}",e.getMessage());
+        }
+		return posts;
+	}
+	
 	public Post addPost(int postType, String userId, String postContent) {
 		Post post = null;
 		try {
@@ -112,24 +119,25 @@ public class PostService {
 		return post;
 	}
 	
-//	public Post findByPostId(int postId){
-//		Post post = new Post();
-//        try{
-//        	post = postRepository.findByPostId(postId);
-//        }
-//        catch(Exception e){
-//            logger.error("Exception in findByPostId() : {}",e.getMessage());
-//        }
-//        return  post;
-//    }
+	public Post findByPostId(int postId){
+		Post post = null;
+        try{
+        	post = postRepository.findByPostId(postId);
+        }
+        catch(Exception e){
+            logger.error("Exception in findByPostId() : {}",e.getMessage());
+        }
+        return  post;
+    }
 	
 	public boolean deletePost(int postId,String userId) {
-        try{
-        	postRepository.deletePost(postId,userId);
+        int status = ZERO;
+        try {
+                status = postRepository.deletePost(postId,userId);
         }
-        catch (Exception e){
-            logger.error("Exception in deletePost() : {}",e.getMessage());
+        catch(Exception e) {
+        	logger.error("Exception in deletePost() : {}",e.getMessage());
         }
-        return postRepository.findByPostId(postId) == null;
+        return (ONE == status) ? true : false;
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ public class PostController {
 	
 	private final Logger logger = LoggerFactory.getLogger(UserController.class);
 	
-    @GetMapping
+    @GetMapping(value="allposts")
     public BaseResponse getAllPosts(){
         List<Post> posts = (List<Post>) postService.getAllPosts();
 
@@ -44,9 +45,9 @@ public class PostController {
         return new BaseResponse("Success",HttpStatus.OK, posts);
     }
     
-    @GetMapping(value="/next")
-    public BaseResponse getnextfifteenPost(@RequestParam(value = "postCount") int postCount){ 
-        List<Post> posts = postService.getnextfifteenPost(postCount);
+    @GetMapping(value="/nextposts")
+    public BaseResponse getNextPosts(@RequestParam(value = "fstRcntPostId") int fstRcntPostId,@RequestParam(value = "scndRcntPostId") int scndRcntPostId,@RequestParam(value = "thrdRcntPostId") int thrdRcntPostId){ 
+        List<Post> posts = postService.getNextPosts(fstRcntPostId, scndRcntPostId, thrdRcntPostId);
         
         if(posts == null) {
         	logger.info("post not found.");
@@ -57,6 +58,19 @@ public class PostController {
         return new BaseResponse("Success",HttpStatus.OK, posts);
     }
 	
+    @GetMapping(value="/nextpage")
+    public BaseResponse getNextPostPage(@RequestParam(value = "pageNo") int pageNo){ 
+        List<Post> posts = postService.getNextPostPage(PageRequest.of(pageNo, 3));
+        
+        if(posts == null) {
+        	logger.info("post not found.");
+            return new BaseResponse("Internal Error", HttpStatus.NOT_FOUND,null);
+        }
+
+        logger.info("Posts retrieved");
+        return new BaseResponse("Success",HttpStatus.OK, posts);
+    }
+    
     @PostMapping
     public BaseResponse addPost(@RequestParam(value = "postTypeId") int postTypeId,
     		@RequestParam(value = "userId") String userId, @RequestParam(value = "postContent") String postContent){
@@ -75,7 +89,7 @@ public class PostController {
     	List<Post> posts = postService.getPostByUser(userId);
     	if(null == posts || posts.isEmpty()) {
     		logger.warn("no posts found for user : {} ", userId);
-    		return new BaseResponse("No posts found or invalid user_name", HttpStatus.INTERNAL_SERVER_ERROR, null);
+    		return new BaseResponse("No posts found or invalid userId", HttpStatus.INTERNAL_SERVER_ERROR, null);
     	}
     	else {
     		logger.info("posts retrieved");
@@ -101,13 +115,13 @@ public class PostController {
     @DeleteMapping
     public BaseResponse deletePost(@RequestParam(value = "postId")int postId, @RequestParam(value = "userId") String userId){
         
-//    	if(postService.findByPostId(postId) == null){
-//            logger.warn("Post does not exists : {}",postId);
-//            return new BaseResponse("Post does not exists",HttpStatus.NOT_ACCEPTABLE,false);
-//        }
+    	if(postService.findByPostId(postId) == null){
+            logger.warn("Post does not exists : {}",postId);
+            return new BaseResponse("Post does not exists",HttpStatus.NOT_ACCEPTABLE,false);
+        }
 
         if(postService.deletePost(postId, userId)) {
-            logger.info("Post deleted : {}",postId);
+            logger.info("Post deleted, postId: {}",postId);
             return new BaseResponse("Success", HttpStatus.OK, true);
         }
 
