@@ -1,6 +1,6 @@
 package com.gemini.gembook.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +31,7 @@ public class Post {
 	@Column(name="post_time")
 //	@Temporal(TemporalType.TIMESTAMP)
 //	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date postTime;
+	private long postTime;
 	
 	public Post() {}
 	
@@ -43,7 +43,7 @@ public class Post {
 		this.postType = new PostType(postType) ;
 		this.user = new User(userId);
 		this.postContent = postContent;
-		this.postTime = new Date();
+		this.postTime = Instant.now().getEpochSecond();
 	}
 	
 	public Integer getPostId() {
@@ -74,11 +74,11 @@ public class Post {
 		this.postContent = postContent;
 	}
 	
-	public Date getPostTime() {
+	public long getPostTime() {
 		return postTime;
 	}
 
-	public void setPostTime(Date postTime) {
+	public void setPostTime(long postTime) {
 		this.postTime = postTime;
 	}
 

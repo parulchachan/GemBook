@@ -34,11 +34,10 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 	List<Post> getRecentPosts();
 	
 	@Query(
-            value = "select * from post where post_id < ?3 and post_id not in (?1,?2,?3) \n"
-            		+ "order by post_time desc limit 3;",
+            value = "select * from post where post_time < ?1 order by post_time desc limit 3;",
             nativeQuery = true
     )
-	List<Post> getNextPosts(int fstRcntPostId, int scndRcntPostId, int thrdRcntPostId);
+	List<Post> getNextPosts(long postTime);
 	
 	@Query(
             value = "select * from post\n"+

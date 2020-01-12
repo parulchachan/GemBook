@@ -20,7 +20,7 @@ create table IF NOT EXISTS gembook.post
 	post_type_id int not null,
 	post_content varchar(255),
 	user_id varchar(255) not null,
-	post_time timestamp,
+	post_time int(11),
 	constraint post_post_type_id_fk
 		foreign key (post_type_id) references gembook.post_type (post_type_id)
 			on update cascade on delete cascade,

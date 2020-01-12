@@ -79,15 +79,15 @@ public class PostService {
 	}
 
 
-	public List<Post> getNextPosts(int fstRcntPostId, int scndRcntPostId, int thrdRcntPostId) {
+	public List<Post> getNextPosts(long postTime) {
 		List<Post> posts = null;
 		
 		try {
-			if(ZERO == fstRcntPostId) {
+			if(ZERO == postTime) {
 				posts = postRepository.getRecentPosts();
 			}
 			else {
-				posts = postRepository.getNextPosts(fstRcntPostId, scndRcntPostId, thrdRcntPostId);
+				posts = postRepository.getNextPosts(postTime);
 			}
         }
         catch (Exception e){

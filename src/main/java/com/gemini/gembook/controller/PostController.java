@@ -46,8 +46,8 @@ public class PostController {
     }
     
     @GetMapping(value="/nextposts")
-    public BaseResponse getNextPosts(@RequestParam(value = "fstRcntPostId") int fstRcntPostId,@RequestParam(value = "scndRcntPostId") int scndRcntPostId,@RequestParam(value = "thrdRcntPostId") int thrdRcntPostId){ 
-        List<Post> posts = postService.getNextPosts(fstRcntPostId, scndRcntPostId, thrdRcntPostId);
+    public BaseResponse getNextPosts(@RequestParam(value = "postTime") long postTime){ 
+        List<Post> posts = postService.getNextPosts(postTime);
         
         if(posts == null) {
         	logger.info("post not found.");
