@@ -22,17 +22,16 @@ public class Like{
 //	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private LikeIdentity likeIdentity;
 	
-	
 	@Column(name="like_time")
-	private Date likeTime;
+	private long likeTime;
 	
 	public Like() {}
 	
 	public Like(LikeIdentity likeIdentity) {
 		this.likeIdentity = likeIdentity;
-		this.likeTime = new Date();
+		Date date=new Date();
+		this.likeTime = date.getTime();
 	}
-
 
 	public LikeIdentity getLikeIdentity() {
 		return likeIdentity;
@@ -42,13 +41,11 @@ public class Like{
 		this.likeIdentity = likeIdentity;
 	}
 
-	public Date getLikeTime() {
+	public long getLikeTime() {
 		return likeTime;
 	}
 
-	public void setLikeTime(Date likeTime) {
+	public void setLikeTime(long likeTime) {
 		this.likeTime = likeTime;
 	}
-
-	
 }

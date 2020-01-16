@@ -33,7 +33,7 @@ public class Comment {
 	@Column(name="comment_time")
 //	@Temporal(TemporalType.TIMESTAMP)
 //	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date commentTime;
+	private long commentTime;
 	
 	public Comment() {}
 	
@@ -45,7 +45,8 @@ public class Comment {
 		this.post = new Post(postId) ;
 		this.user = new User(userId);
 		this.commentContent = commentContent;
-		this.commentTime = new Date();
+		Date date=new Date();
+		this.commentTime = date.getTime();
 	}
 
 	public int getCommentId() {
@@ -80,11 +81,11 @@ public class Comment {
 		this.commentContent = commentContent;
 	}
 
-	public Date getCommentTime() {
+	public long getCommentTime() {
 		return commentTime;
 	}
 
-	public void setCommentTime(Date commentTime) {
+	public void setCommentTime(long commentTime) {
 		this.commentTime = commentTime;
 	}
 

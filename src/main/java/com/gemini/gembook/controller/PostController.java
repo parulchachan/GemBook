@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gemini.gembook.model.CompletePost;
 import com.gemini.gembook.model.Post;
 import com.gemini.gembook.service.PostService;
 
@@ -42,6 +43,24 @@ public class PostController {
 
         logger.info("Posts retrieved");
         return new BaseResponse("Success",HttpStatus.OK, posts);
+    }
+    
+    @GetMapping(value="/full")
+    public BaseResponse getCompletePost(){
+        List<CompletePost> completePost = (List<CompletePost>) postService.getCompletePost();
+
+        if(completePost == null) {
+        	logger.warn("post not found.");
+            return new BaseResponse("Internal Error", HttpStatus.INTERNAL_SERVER_ERROR,null);
+        }
+        
+        if(completePost.isEmpty()) {
+        	logger.info("post not found.");
+            return new BaseResponse("No Post Found", HttpStatus.NOT_FOUND,null);        
+        }
+
+        logger.info("Posts retrieved");
+        return new BaseResponse("Success",HttpStatus.OK, completePost);
     }
     
     @GetMapping(value="/next")
@@ -95,16 +114,15 @@ public class PostController {
     		logger.info("posts retrieved");
     		return new BaseResponse("Success",HttpStatus.OK, posts);
     	}
-    	
     }
     
     @DeleteMapping
     public BaseResponse deletePost(@RequestParam(value = "postId")int postId, @RequestParam(value = "userId") String userId){
         
-//    	if(postService.findByPostId(postId) == null){
-//            logger.warn("Post does not exists : {}",postId);
-//            return new BaseResponse("Post does not exists",HttpStatus.NOT_ACCEPTABLE,false);
-//        }
+    	if(postService.findByPostId(postId) == null){
+            logger.warn("Post does not exists : {}",postId);
+            return new BaseResponse("Post does not exists",HttpStatus.NOT_ACCEPTABLE,false);
+        }
 
         if(postService.deletePost(postId, userId)) {
             logger.info("Post deleted : {}",postId);

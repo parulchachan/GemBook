@@ -6,9 +6,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 public class CompletePost {
-	
-//	@ManyToOne
-//	@JoinColumn(name="user_id")
+
 	private Post post;
 	
 	private List<Like> likes;

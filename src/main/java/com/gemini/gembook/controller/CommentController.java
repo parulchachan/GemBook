@@ -81,7 +81,7 @@ public class CommentController {
 		List<Comment> comments = commentService.getLatestComments(postId);
 		if(null == comments) {
 			logger.error("comments not found.");
-			return new BaseResponse("comments not found",HttpStatus.INTERNAL_SERVER_ERROR,null);
+			return new BaseResponse("comments not found",HttpStatus.BAD_REQUEST,null);
 		}
 		return new BaseResponse("comments found",HttpStatus.OK,comments);
 	}

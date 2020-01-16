@@ -20,12 +20,6 @@ public class CommentService {
 	@Autowired
 	private CommentRepository commentRepository;
 	
-	@Autowired
-	private PostService postService;
-	
-	@Autowired
-	private UsersService usersService;
-	
 	private final Logger logger = LoggerFactory.getLogger(CommentService.class);
 	private static final int ZERO = 0;
 	private static final int ONE = 1;
