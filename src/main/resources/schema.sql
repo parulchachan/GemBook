@@ -31,7 +31,8 @@ create table IF NOT EXISTS gembook.post
 create table IF NOT EXISTS gembook.likes (
 	user_id varchar(255) not null,
 	post_id int not null,
-	like_time bigint,
+	like_time bigint,	
+	like_flag varchar(1) not null,
 	constraint likes_user_id_user_user_id_fk foreign key (user_id) references gembook.user (user_id)
 		on update cascade on delete cascade,
         constraint likes_post_id_post_post_id_fk foreign key (post_id) references gembook.post (post_id)

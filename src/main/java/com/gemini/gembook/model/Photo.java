@@ -24,12 +24,13 @@ public class Photo {
 	
 	private Blob photoContent;
 	
-	private Date photoTime;
+	private long photoTime;
 
 	public Photo(int postId, Blob photoContent) {
 		this.postId = new Post(postId);
 		this.photoContent = photoContent;
-		this.photoTime = new Date();
+		Date date=new Date();
+		this.photoTime = date.getTime();
 		
 	}
 	public int getPhotoId() {
@@ -56,11 +57,11 @@ public class Photo {
 		this.photoContent = photoContent;
 	}
 
-	public Date getPhotoTime() {
+	public long getPhotoTime() {
 		return photoTime;
 	}
 
-	public void setPhotoTime(Date photoTime) {
+	public void setPhotoTime(long photoTime) {
 		this.photoTime = photoTime;
 	}
 }

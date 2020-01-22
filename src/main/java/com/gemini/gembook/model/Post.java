@@ -46,6 +46,7 @@ public class Post {
 		this.postContent = postContent;
 		Date date=new Date();
 		this.postTime = date.getTime();
+//		this.postTime = Instant.now().getEpochSecond();
 	}
 	
 	public Integer getPostId() {

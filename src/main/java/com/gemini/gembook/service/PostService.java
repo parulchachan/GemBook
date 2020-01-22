@@ -14,11 +14,11 @@ import com.gemini.gembook.model.Comment;
 import com.gemini.gembook.model.CompletePost;
 import com.gemini.gembook.model.Like;
 import com.gemini.gembook.model.Post;
-import com.gemini.gembook.model.PostType;
 import com.gemini.gembook.model.User;
 import com.gemini.gembook.repository.CommentRepository;
 import com.gemini.gembook.repository.LikeRepository;
 import com.gemini.gembook.repository.PostRepository;
+import com.gemini.gembook.repository.UsersRepository;
 
 @Service
 public class PostService {
@@ -26,15 +26,18 @@ public class PostService {
 	private PostRepository postRepository;
 	private CommentRepository commentRepository;
 	private LikeRepository likeRepository;
+	private UsersRepository userRepository;
 	private final Logger logger = LoggerFactory.getLogger(PostService.class);
 	private final int ZERO = 0;
 	private final int ONE = 1;
 	
 	@Autowired
-	public PostService(PostRepository postRepository, CommentRepository commentRepository, LikeRepository likeRepository){
+	public PostService(PostRepository postRepository, CommentRepository commentRepository, 
+			LikeRepository likeRepository, UsersRepository userRepository){
 		this.postRepository = postRepository;
 		this.commentRepository = commentRepository;
 		this.likeRepository = likeRepository;
+		this.userRepository = userRepository;
 
 	}
 	
@@ -52,6 +55,9 @@ public class PostService {
 	public List<Post> getPostByUser(String userId) {
 		List<Post> posts = null;
 		try {
+			User user = null;
+			user = this.userRepository.findByUserName(userId);
+			if(user == null) return posts;
 			posts = postRepository.getPostByUserName(userId);
 		}
 		catch(Exception e) {
@@ -70,17 +76,6 @@ public class PostService {
 		}
 		return posts;
 	}
-	
-//	public Post getPostById(int postId) {
-//		Post post = null;
-//		try {
-//			post = postRepository.getPostById(postId);
-//		}
-//		catch(Exception e) {
-//			logger.error("postRepository.getPostById throws an exception, {}",e.getMessage());
-//		}
-//		return post;
-//	}
 	
 	public boolean updatePost(int postId, String postContent) {
 		int status = ZERO;
@@ -135,7 +130,8 @@ public class PostService {
 	}
 	
 	public Post findByPostId(int postId){
-		Post post = new Post();
+
+		Post post = null;
         try{
         	post = postRepository.findByPostId(postId);
         }
@@ -165,7 +161,7 @@ public class PostService {
 		List<Comment> comments = null;
 		try {
 			completePosts = new ArrayList<>();
-			posts = postRepository.findAll();
+			posts = postRepository.getRecentPosts();
 			Iterator<Post> iterator = posts.iterator();
 			logger.info(posts.toString());
 			while(iterator.hasNext()) {
@@ -188,6 +184,71 @@ public class PostService {
 		}
 		return completePosts;
 	
+	}
+	
+	@SuppressWarnings("null")
+	public List<CompletePost> getNextCompletePost(long postTime){
+		logger.info("inside next complete post");
+		List<CompletePost> completePosts = null;
+		List<Post> posts = null;
+		List<Like> likes = null;
+		List<Comment> comments = null;
+		try {
+			completePosts = new ArrayList<>();
+			posts = postRepository.getNextPosts(postTime);
+			Iterator<Post> iterator = posts.iterator();
+			logger.info(posts.toString());
+			while(iterator.hasNext()) {
+				Post post = (Post) iterator.next();
+				logger.info(post.toString());
+				int postId = post.getPostId();
+				likes = likeRepository.findByLikeIdentityPost(post);
+				logger.info(likes.toString());
+				comments = commentRepository.getAllComments(postId);
+				logger.info(comments.toString());
+				CompletePost completePost = new CompletePost(post, likes, comments);
+				logger.info(completePost.toString());
+				completePosts.add(completePost);
+				logger.info(completePosts.toString());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("Exception in getCompletePost() : {}",e.getMessage());
+		}
+		return completePosts;
+	
+	}
+	
+	@SuppressWarnings("null")
+	public List<CompletePost> getCompletePostByType(int postTypeId){
+		logger.info("inside next complete post");
+		List<CompletePost> completePosts = null;
+		List<Post> posts = null;
+		List<Like> likes = null;
+		List<Comment> comments = null;
+		try {
+			completePosts = new ArrayList<>();
+			posts = postRepository.getPostByType(postTypeId);
+			Iterator<Post> iterator = posts.iterator();
+			logger.info(posts.toString());
+			while(iterator.hasNext()) {
+				Post post = (Post) iterator.next();
+				logger.info(post.toString());
+				int postId = post.getPostId();
+				likes = likeRepository.findByLikeIdentityPost(post);
+				logger.info(likes.toString());
+				comments = commentRepository.getAllComments(postId);
+				logger.info(comments.toString());
+				CompletePost completePost = new CompletePost(post, likes, comments);
+				logger.info(completePost.toString());
+				completePosts.add(completePost);
+				logger.info(completePosts.toString());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("Exception in getCompletePost() : {}",e.getMessage());
+		}
+		return completePosts;
 	}
 	
 }

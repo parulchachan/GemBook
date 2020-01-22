@@ -24,13 +24,17 @@ public class Like{
 	
 	@Column(name="like_time")
 	private long likeTime;
+
+	@Column(name="like_flag")
+	private String likeFlag;
 	
 	public Like() {}
 	
-	public Like(LikeIdentity likeIdentity) {
+	public Like(LikeIdentity likeIdentity,String likeFlag) {
 		this.likeIdentity = likeIdentity;
 		Date date=new Date();
 		this.likeTime = date.getTime();
+		this.likeFlag = likeFlag;
 	}
 
 	public LikeIdentity getLikeIdentity() {
@@ -47,5 +51,13 @@ public class Like{
 
 	public void setLikeTime(long likeTime) {
 		this.likeTime = likeTime;
+	}
+
+	public String getLikeFlag() {
+		return likeFlag;
+	}
+
+	public void setLikeFlag(String likeFlag) {
+		this.likeFlag = likeFlag;
 	}
 }

@@ -21,7 +21,9 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 	
 	
 	@Query(
-			value="select * from post where post_type_id = ?1", nativeQuery = true
+			value="select * from post where post_type_id = ?1\n " +
+					"order by post_time desc; "
+			, nativeQuery = true
 			)
 	public List<Post> getPostByType(int postTypeId);
 
@@ -54,7 +56,6 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 			nativeQuery = true )
 	public  int updatePost(int postId, String postContent);
 
-
 	@Modifying
 	@Transactional
 	@Query(	
@@ -65,7 +66,6 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 	)	
 	int deletePost(int postId, String userId);
 	
-	
 	@Query(
             value = "Select * from post where post_id = ?1",
             nativeQuery = true
@@ -73,7 +73,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
     Post findByPostId(int postId);
 	
 	@Query(
-            value = "Select * from posts where post_id = ?1",
+            value = "Select * from post where post_id = ?1",
             nativeQuery = true
     )
     Post findCompletePost(int postId);

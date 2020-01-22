@@ -31,15 +31,27 @@ public interface LikeRepository extends JpaRepository<Like, LikeIdentity>{
             nativeQuery = true
     )
 	Like findById(int postId, String userId);
-
+	
 	@Modifying
 	@Transactional
 	@Query(
-			value = "Delete from likes\n" +
+			value = "update likes\n" +
+					"set like_flag = ?3," +
+					"like_time = ?4\n " +
 					"where post_id = ?1\n" +
 					"and user_id = ?2",
            nativeQuery = true
 	)
-	void deleteLike(int postId, String userId);
+	int updateLike(int postId, String userId,String likeFlag,long likeTime);
+
+//	@Modifying
+//	@Transactional
+//	@Query(
+//			value = "Delete from likes\n" +
+//					"where post_id = ?1\n" +
+//					"and user_id = ?2",
+//           nativeQuery = true
+//	)
+//	void deleteLike(int postId, String userId);
 
 }

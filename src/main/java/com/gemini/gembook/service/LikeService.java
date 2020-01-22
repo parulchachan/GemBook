@@ -10,16 +10,25 @@ import org.springframework.stereotype.Service;
 import com.gemini.gembook.model.Like;
 import com.gemini.gembook.model.Post;
 import com.gemini.gembook.repository.LikeRepository;
+import com.gemini.gembook.repository.PostRepository;
+import com.gemini.gembook.repository.UsersRepository;
 
 @Service
 public class LikeService {
 	
 	private final Logger logger = LoggerFactory.getLogger(PostService.class);
 	private LikeRepository likeRepository;
+	private UsersRepository userRepository;
+	private PostRepository postRepository;
+	private final int ZERO = 0;
+	private final int ONE = 1;
 	
 	@Autowired
-	public LikeService(LikeRepository likeRepository) {
+	public LikeService(LikeRepository likeRepository,PostRepository postRepository,
+			UsersRepository userRepository) {
 		this.likeRepository = likeRepository;
+		this.userRepository = userRepository;
+		this.postRepository = postRepository;
 	}
 	
 	public List<Like> getLikesByPostId(int postId) {
@@ -27,19 +36,24 @@ public class LikeService {
         try {
         	Post post = new Post(postId);
         	likes = likeRepository.findByLikeIdentityPost(post);
-        	 logger.info(likes.toString());
         }catch (Exception e){
             logger.error("Exception in getLikesByPostId() : {}",e.getMessage());
         }
         return likes;
 	}
 	
+	public boolean isLikeIdentityValid(int postId,String userId) {
+		if(postRepository.existsById(postId)) {
+			if(userRepository.existsById(userId))
+				return true;
+		}
+		return false;
+	}
+	
 	public Like getLike(int postId,String userId) {
 		Like like = null;
         try {
-//        	like = new Like(new LikeIdentity(postId,userId));
         	like = likeRepository.findById(postId,userId);
-//        	 logger.info(like.toString());
         }catch (Exception e){
             logger.error("Exception in getLike calling findById() : {}",e.getMessage());
         }
@@ -57,16 +71,16 @@ public class LikeService {
         }
 		return like1;
 	}
-
-	public boolean deleteLike(int postId,String userId) {
-        try{
-        	likeRepository.deleteLike(postId,userId);
+	
+	public boolean updateLike(int postId,String userId,String likeFlag,long likeTime) {
+		int status = ZERO;
+		try {
+			status = likeRepository.updateLike(postId,userId,likeFlag,likeTime);
         }
         catch (Exception e){
-            logger.error("Exception in deleteLike() : {}",e.getMessage());
+            logger.error("Exception in updateLike() : {}",e.getMessage());
         }
-        return likeRepository.findById(postId,userId) == null;
-    }
-	
+		return (ONE == status) ? true : false;
+	}
 	
 }
