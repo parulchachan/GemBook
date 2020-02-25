@@ -18,12 +18,10 @@ public interface LikeRepository extends JpaRepository<Like, LikeIdentity>{
 	
 	@Query(
             value = "select * from likes\n"+
-            		"where post_id = ?1",
+            		"where post_id = ?1 and like_flag='Y' ",
             nativeQuery = true
     )
 	List<Like> findByLikeIdentityPost(Post post);
-	
-	
 	
 	@Query(
             value = "select * from likes\n"+

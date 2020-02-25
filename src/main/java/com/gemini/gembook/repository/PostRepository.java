@@ -30,7 +30,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>{
 	
 	@Query(
             value = "select * from post \n"+
-            		"order by post_time desc limit 3;",
+            		"order by post_time desc limit 10;",
             nativeQuery = true
     )
 	List<Post> getRecentPosts();

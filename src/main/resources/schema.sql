@@ -41,6 +41,16 @@ create table IF NOT EXISTS gembook.likes (
 
 create table IF NOT EXISTS gembook.comments
 (
+	photo_id  int auto_increment primary key,
+	post_id int not null,
+	photo_content varchar(4000),
+	photo_time bigint,
+	constraint photo_post_id_post_post_id_fk foreign key (post_id) references gembook.post (post_id)
+			on update cascade on delete cascade
+);
+
+create table IF NOT EXISTS gembook.photos
+(
 	comment_id  int auto_increment primary key,
 	post_id int not null,
 	user_id varchar(255) not null,
@@ -58,6 +68,6 @@ insert into gembook.post_type(post_type_id, post_type_name) values(1003,'Challen
 insert into gembook.post_type(post_type_id, post_type_name) values(1004,'Projects');
 insert into gembook.post_type(post_type_id, post_type_name) values(1005,'Announcements');
 
---insert into users(user_id, user_name,email_id) values('user0001','Parul Chachan','parul.chachan@geminisolutions.in');
---insert into users(user_id, user_name,email_id) values('user0002','Parul','parul.chachan@gmail.com');
+insert into user(user_id, first_name,last_name) values('parul.chachan@geminisolutions.in','Parul','Chachan');
+insert into user(user_id, first_name,last_name) values('parul.chachan@gmail.com','P','C');
 --insert into posts(post_type_id,post_content,user_id,post_time) values(1002,'Hi Everyone! I got employee of the year.','user0001', SYSDATE());

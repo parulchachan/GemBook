@@ -2,8 +2,6 @@ package com.gemini.gembook.model;
 
 import java.util.List;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 public class CompletePost {
 

@@ -53,14 +53,15 @@ public class UsersService {
 		return user;
 	}
 	
-	public boolean deleteUser(String userName) {
+	public boolean deleteUser(String userId) {
 		try {
-			usersRepository.deleteByUserName(userName);
+			User user = new User(userId);
+			usersRepository.delete(user);
 		}
 		catch(Exception e) {
 			logger.error("usersRepository.deleteByUserName throws an exception, {} ",e.getMessage());
 		}
-		return findByUserName(userName) == null;
+		return findByUserName(userId) == null;
 	}
 	
 }

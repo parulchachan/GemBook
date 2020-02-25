@@ -1,7 +1,7 @@
 package com.gemini.gembook.model;
 
 import java.io.Serializable;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

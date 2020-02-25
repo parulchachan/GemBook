@@ -4,7 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,7 @@ public class Comment {
 	
 	@Id
 	@Column(name="comment_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int commentId;
 	
 	@ManyToOne
@@ -33,8 +35,6 @@ public class Comment {
 	private String commentContent;
 	
 	@Column(name="comment_time")
-//	@Temporal(TemporalType.TIMESTAMP)
-//	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private long commentTime;
 	
 	public Comment() {}
