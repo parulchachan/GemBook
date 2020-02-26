@@ -111,10 +111,15 @@ public class PostService {
 		return post;
 	}
 	
-	public boolean updatePost(int postId, String postContent) {
+	public boolean updatePost(int postId, String postContent, MultipartFile files) {
 		int status = ZERO;
 		try {
 			status = postRepository.updatePost(postId, postContent);
+			this.photoRepository.deletePhotos(postId);
+			if(files != null) {
+				Photo photo = new Photo(postId,files);
+				this.photoRepository.save(photo);
+			}
 		}
 		catch(Exception e) {
 			logger.error("postRepository.updatePost throws an exception, {} ", e.getMessage());

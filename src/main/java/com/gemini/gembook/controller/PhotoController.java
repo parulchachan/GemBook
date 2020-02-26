@@ -16,10 +16,5 @@ public class PhotoController {
 	
 	@Autowired
 	private PhotoService photoService;
-//	
-//	@PostMapping( value="/save")
-//	public BaseResponse saveDocuments(@RequestParam String postId,
-//								@RequestParam MultipartFile photo,){
-//		
-//	}
+
 }

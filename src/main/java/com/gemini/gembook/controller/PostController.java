@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.gemini.gembook.model.CompletePost;
 import com.gemini.gembook.model.Post;
 import com.gemini.gembook.service.PostService;
 
@@ -151,8 +148,11 @@ public class PostController {
     }
     
     @PutMapping
-	public BaseResponse editPost(@RequestParam("postId")int postId, @RequestParam("postContent") String postContent) {
-		if(postService.updatePost(postId, postContent)) {
+	public BaseResponse editPost(@RequestParam("postId")int postId, 
+			@RequestParam("postContent") String postContent,
+    		@RequestPart(value = "files",required=false) MultipartFile files) {
+    	
+		if(postService.updatePost(postId, postContent,files)) {
 			return new BaseResponse("post updated successfully",HttpStatus.OK,true);
 		}
 		else {
