@@ -45,6 +45,14 @@ public class User {
 			orphanRemoval=true,
 			mappedBy = "user")
 	private List<Comment> comments;
+	
+	@JsonIgnore
+	@OneToMany(
+			cascade = CascadeType.ALL, 
+			fetch = FetchType.LAZY, 
+			orphanRemoval=true,
+			mappedBy = "commentIdentity.user")
+	private List<CommentLike> commentLikes;
 
 	public User(String firstName, String lastName, String userId) {
 		this.firstName = firstName;
@@ -109,6 +117,16 @@ public class User {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
+	
+	@JsonIgnore
+	public List<CommentLike> getCommentLikes() {
+		return commentLikes;
+	}
+
+	public void setCommentLikes(List<CommentLike> commentLikes) {
+		this.commentLikes = commentLikes;
+	}
+
 	
 	
 }

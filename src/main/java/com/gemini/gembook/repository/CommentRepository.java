@@ -16,16 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment,Integer>{
 	@Modifying
 	@Transactional
 	@Query(
-			value = "Delete from comments\n" +
-					"where comment_id = ?1",
-           nativeQuery = true
-	)	
-	void deleteComment(int commentId);
-
-	
-	@Modifying
-	@Transactional
-	@Query(
 			value="update comments set comment_content = ?2 where comment_id = ?1",
 			nativeQuery = true )
 	public  int updateComment(int commentId, String commentContent);

@@ -6,13 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import com.gemini.gembook.model.Comment;
-import com.gemini.gembook.model.Post;
-import com.gemini.gembook.model.User;
 import com.gemini.gembook.repository.CommentRepository;
-
 
 @Service
 public class CommentService {
@@ -51,7 +46,7 @@ public class CommentService {
 	
 	public boolean deleteComment(int commentId) {
         try{
-        	commentRepository.deleteComment(commentId);
+        	commentRepository.deleteById(commentId);
         }
         catch (Exception e){
             logger.error("Exception in deleteComment() : {}",e.getMessage());

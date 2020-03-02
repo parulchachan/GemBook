@@ -42,14 +42,4 @@ public interface LikeRepository extends JpaRepository<Like, LikeIdentity>{
 	)
 	int updateLike(int postId, String userId,String likeFlag,long likeTime);
 
-//	@Modifying
-//	@Transactional
-//	@Query(
-//			value = "Delete from likes\n" +
-//					"where post_id = ?1\n" +
-//					"and user_id = ?2",
-//           nativeQuery = true
-//	)
-//	void deleteLike(int postId, String userId);
-
 }

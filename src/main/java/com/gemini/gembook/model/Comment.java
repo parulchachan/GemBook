@@ -1,7 +1,9 @@
 package com.gemini.gembook.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,13 +32,20 @@ public class Comment {
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	User user;
+	private User user;
 	
 	@Column(name="comment_content")
 	private String commentContent;
 	
 	@Column(name="comment_time")
 	private long commentTime;
+	
+	@OneToMany(
+			cascade = CascadeType.ALL, 
+			orphanRemoval=true,
+			mappedBy = "commentIdentity.comment")
+	private List<CommentLike> commentLikes;
+	
 	
 	public Comment() {}
 	
@@ -91,5 +101,14 @@ public class Comment {
 	public void setCommentTime(long commentTime) {
 		this.commentTime = commentTime;
 	}
+	
+	public List<CommentLike> getCommentLikes() {
+		return commentLikes;
+	}
+
+	public void setCommentLikes(List<CommentLike> commentLikes) {
+		this.commentLikes = commentLikes;
+	}
+
 
 }

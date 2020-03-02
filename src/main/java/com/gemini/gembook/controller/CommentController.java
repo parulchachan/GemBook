@@ -52,11 +52,6 @@ public class CommentController {
 	
 	@DeleteMapping
     public BaseResponse deleteComment(@RequestParam(value = "commentId")int commentId){
-        
-//    	if(commentService.findByCommentId(commentId) == null){
-//            logger.warn("Comment does not exists : {}",commentId);
-//            return new BaseResponse("Comment does not exists",HttpStatus.NOT_ACCEPTABLE,false);
-//        }
 
         if(commentService.deleteComment(commentId)) {
             logger.info("Comment deleted : {}",commentId);

@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 public class Like{
 	
 	@EmbeddedId
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private LikeIdentity likeIdentity;
 	
 	@Column(name="like_time")
