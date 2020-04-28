@@ -2,6 +2,8 @@ package com.gemini.gembook.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gemini.gembook.model.Comment;
+import com.gemini.gembook.model.Post;
 import com.gemini.gembook.service.CommentService;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -37,6 +40,22 @@ public class CommentController {
 		}
 		return new BaseResponse("comments found",HttpStatus.OK,comments);
 	}	 
+	
+	 @GetMapping(value="/commentbyid")
+	    public BaseResponse getCommentId(@RequestParam(value="commentId") int commentId,
+	    		HttpServletResponse response) {
+	    	Comment comment = commentService.findByCommentId(commentId);
+	    	if(null == comment) {
+	    		logger.warn("Wrong commentId", commentId);
+	    		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	    		return new BaseResponse("invalid userId", HttpStatus.BAD_REQUEST, null);
+	    	}
+	    	else {
+	    		logger.info("comment retrieved");
+	    		response.setStatus(HttpServletResponse.SC_OK);
+	    		return new BaseResponse("Success",HttpStatus.OK, comment);
+	    	}
+	    }
 	
 	@PostMapping
 	public BaseResponse addComment(@RequestParam(value = "postId") int postId,
@@ -82,5 +101,7 @@ public class CommentController {
 		}
 		return new BaseResponse("comments found",HttpStatus.OK,comments);
 	}
+	
+	
 	
 }

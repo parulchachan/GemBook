@@ -2,6 +2,19 @@ package com.gemini.gembook.service;
 
 import java.util.List;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +26,9 @@ import com.gemini.gembook.model.User;
 import com.gemini.gembook.repository.PhotoRepository;
 import com.gemini.gembook.repository.PostRepository;
 import com.gemini.gembook.repository.UsersRepository;
+import com.google.common.io.Files;
+
+import org.springframework.mock.web.MockMultipartFile;
 
 @Service
 public class PostService {
@@ -101,6 +117,45 @@ public class PostService {
 		try {
 			post = postRepository.save(new Post(postType,userId,postContent));
 			if(files != null) {
+					System.out.println(files.getSize());
+					if(files.getSize()>100) {
+					File convFile = new File(files.getOriginalFilename());
+					files.transferTo(convFile);
+					
+			        BufferedImage image = ImageIO.read(convFile);
+	
+			        File output = new File(files.getOriginalFilename());
+			        OutputStream out = new FileOutputStream(output);
+			        
+
+					String fileType = Files.getFileExtension(files.getOriginalFilename());
+			        
+			        ImageWriter writer =  ImageIO.getImageWritersByFormatName(fileType).next();
+			        ImageOutputStream ios = ImageIO.createImageOutputStream(out);
+			        writer.setOutput(ios);
+	
+			        ImageWriteParam param = writer.getDefaultWriteParam();
+			        if (param.canWriteCompressed()){
+			            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			            param.setCompressionQuality(0.5f);
+			            System.out.println("compressed");
+			        }
+	
+			        writer.write(null, new IIOImage(image, null, null), param);
+	
+			        out.close();
+			        ios.close();
+			        writer.dispose();
+			        
+			        byte[] bytesArray = new byte[(int) output.length()];
+			        FileInputStream fis = new FileInputStream(output);
+			        fis.read(bytesArray); //read file into bytes[]
+			        fis.close();
+			        files = new MockMultipartFile(files.getOriginalFilename(),bytesArray);
+					
+			        System.out.println(files.getSize());
+				}
+				
 				Photo photo = new Photo(post.getPostId(),files);
 				this.photoRepository.save(photo);
 			}
@@ -115,7 +170,7 @@ public class PostService {
 		int status = ZERO;
 		try {
 			status = postRepository.updatePost(postId, postContent);
-			this.photoRepository.deletePhotos(postId);
+//			this.photoRepository.deletePhotos(postId);
 			if(files != null) {
 				Photo photo = new Photo(postId,files);
 				this.photoRepository.save(photo);

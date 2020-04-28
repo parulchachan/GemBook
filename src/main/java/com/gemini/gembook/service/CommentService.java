@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.gemini.gembook.model.Comment;
+import com.gemini.gembook.model.Post;
 import com.gemini.gembook.repository.CommentRepository;
 
 @Service
@@ -65,6 +66,18 @@ public class CommentService {
 		return (ONE == status) ? true : false;
 	}
 	
+	public Comment findByCommentId(int commentId){
+
+		Comment comment = null;
+        try{
+        	comment = commentRepository.findByCommentId(commentId);
+        }
+        catch(Exception e){
+            logger.error("Exception in findByCommentId() : {}",e.getMessage());
+        }
+        return  comment;
+    }
+	
 	public List<Comment> getLatestComments(int postId) {
 		List<Comment> comments = null;
 		try {
@@ -75,6 +88,8 @@ public class CommentService {
 		}
 		return comments;
 	}
+
+	
 	
 //	public  List<Comment> getCommentsByPostId(int postId){
 //		List<Comment> comments = null;

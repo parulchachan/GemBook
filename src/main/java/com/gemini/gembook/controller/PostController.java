@@ -112,7 +112,7 @@ public class PostController {
     }
     
     @GetMapping(value="/postbyid")
-    public BaseResponse getUserPost(@RequestParam(value="postId") int postId,
+    public BaseResponse getUserPostId(@RequestParam(value="postId") int postId,
     		HttpServletResponse response) {
     	Post post = postService.findByPostId(postId);
     	if(null == post) {

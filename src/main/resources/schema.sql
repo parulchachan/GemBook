@@ -1,4 +1,5 @@
-create schema IF NOT EXISTS gembook collate latin1_swedish_ci;
+--create schema IF NOT EXISTS gembook collate latin1_swedish_ci;
+create schema IF NOT EXISTS gembook collate utf8mb4_unicode_ci;
 
 create table IF NOT EXISTS gembook.user
 (
